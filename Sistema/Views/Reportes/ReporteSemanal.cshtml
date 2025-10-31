@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Sistema.Models.asistenciaModel>
+@{
+    ViewData["Title"] = "Resultados del Reporte";
+}
+
+<div class="container mt-5 mb-5">
+
+    <!-- Encabezado -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-success">
+            <i class="fa-solid fa-clipboard-list"></i> Resultados del Reporte
+        </h1>
+        <p class="text-muted">Consulta detallada de las asistencias registradas</p>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center">
+                    <thead class="table-success text-dark">
+                        <tr>
+                            <th><i class="fa-solid fa-id-card"></i> Empleado</th>
+                            <th><i class="fa-solid fa-user"></i> Nombre</th>
+                            <th><i class="fa-solid fa-calendar-days"></i> Fecha</th>
+                            <th><i class="fa-solid fa-door-open"></i> Entrada</th>
+                            <th><i class="fa-solid fa-door-closed"></i> Salida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var a in Model)
+                            {
+                                <tr>
+                                    <td>@a.num_empleado_reloj</td>
+                                    <td>@(a.colaborador?.nombre ?? "—")</td>
+                                    <td>@a.fecha.ToString("dd/MM/yyyy")</td>
+                                    <td>@(a.hora_entrada?.ToString("HH:mm") ?? "—")</td>
+                                    <td>@(a.hora_salida?.ToString("HH:mm") ?? "—")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-muted py-4">
+                                    <i class="fa-solid fa-circle-info"></i> No se encontraron registros en este rango de fechas.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botón de exportar -->
+            <form asp-action="DescargarExcel" method="post" class="text-end mt-4">
+                <input type="hidden" name="fechaInicio" value="@Model.Min(a => a.fecha).ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="fechaFin" value="@Model.Max(a => a.fecha).ToString("yyyy-MM-dd")" />
+                <button type="submit" class="btn btn-success px-4 shadow-sm rounded-pill">
+                    <i class="fa-solid fa-file-excel"></i> Descargar Excel
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<!-- Estilos -->
+<style>
+    body {
+        background: linear-gradient(135deg, #f8fff8, #eafbea);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .card {
+        transition: all 0.3s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+    table thead {
+        font-weight: 600;
+    }
+
+    table tbody tr:hover {
+        background-color: #f1f9f1;
+    }
+
+    .btn-success {
+        background: linear-gradient(90deg, #198754, #28a745);
+        border: none;
+        transition: 0.3s ease;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(90deg, #157347, #1e9b59);
+            transform: scale(1.03);
+        }
+
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+</style>

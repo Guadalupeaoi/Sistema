@@ -1,0 +1,49 @@
+﻿@model Sistema.Models.ColaboradorModel
+@{
+    ViewData["Title"] = "Eliminar Colaborador";
+}
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="#">
+            <img src="/css/Img/logo.png" alt="Logo PCLATEZ" />
+            PCLATEZ | Control de Asistencia
+        </a>
+        <div class="d-flex">
+            <a href="/Home/Index" class="nav-link me-3">
+                <i class="fa-solid fa-house"></i> Inicio
+            </a>
+            <a href="/Account/Logout" class="btn btn-outline-light btn-sm">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="text-danger fw-bold">¿Eliminar colaborador?</h2>
+    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+
+    <div class="card p-4 shadow-sm">
+        <dl class="row">
+            <dt class="col-sm-3"># Empleado</dt>
+            <dd class="col-sm-9">@Model.num_empleado</dd>
+
+            <dt class="col-sm-3">Nombre</dt>
+            <dd class="col-sm-9">@Model.nombre</dd>
+
+            <dt class="col-sm-3">Apellido</dt>
+            <dd class="col-sm-9">@Model.apellido</dd>
+
+            <dt class="col-sm-3">Área</dt>
+            <dd class="col-sm-9">@Model.area</dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="num_empleado" />
+            <button type="submit" class="btn btn-danger">
+                <i class="fa-solid fa-trash"></i> Eliminar
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

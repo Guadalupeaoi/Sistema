@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sistema.Entidad
+﻿namespace Sistema.SistemaEL.Propiedades
 {
-    public class huellaEL
+    public class HuellaEl
     {
-        public int id_huella {  get; set; }
-        public string? sensor {  get; set; }
+        public int IdHuella {get; set;}
+        public int IdUsuario { get; set; }
+        public string? Nombre { get; set; }
+        public int DedoIndex { get; set; } 
+        public string? TemplateHuella { get; set; }
+        public DateTime FechaRegistro { get; set; }
     }
 }

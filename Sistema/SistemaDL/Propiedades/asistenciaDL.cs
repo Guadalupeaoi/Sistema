@@ -2,12 +2,15 @@
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace Sistema.SistemaDL.Propiedades
 {
     public class asistenciaDL
     {
+      
         public DataTable ConsultaAsistencia(List<SqlParameter> parametros)
+
         {
             return new ConexionDB().EjecutaStoredProcedureResultSet("dbo.ConsultaAsistencia", parametros);
         }
@@ -18,5 +21,5 @@ namespace Sistema.SistemaDL.Propiedades
         }
     }
 
-
 }
+

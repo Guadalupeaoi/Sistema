@@ -5,6 +5,7 @@ namespace Sistema.SistemaDL.Propiedades
 {
     public class colaboradorDL
     {
+
         public DataTable ConsultaNombre(List<SqlParameter> parametros)
         {
             return new ConexionDB().EjecutaStoredProcedureResultSet("dbo.ConsultaNombre", parametros);
@@ -21,6 +22,7 @@ namespace Sistema.SistemaDL.Propiedades
         }
 
 
-        
+
     }
 }
+

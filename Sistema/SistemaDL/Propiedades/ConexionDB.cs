@@ -1,34 +1,38 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using zkemkeeper;
 
 namespace Sistema.SistemaDL.Propiedades
 {
     public class ConexionDB
+
     {
-        private string ConnectionString { get; set; }
+        
+        private readonly string _connectionString;
 
         public ConexionDB()
+
         {
-            this.ConnectionString = IConfiguration.ConnectionStrings["ASISTEM"].ToString();
+            var builer = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
         }
 
-        /// <summary>
-        /// Ejecución de procedimientos almacenados, con base en sus parámetros
-        /// </summary>
-        /// <param name="storedProcedure">Contiene el nombre del procedimiento almacenado</param>
-        /// <param name="parameters">Lista de parámetros que requiere el SP</param>
-        /// <returns>Result Set</returns>
+        public ConexionDB(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("ASISTEM");   
+        }
+
         public DataTable EjecutaStoredProcedureResultSet(string storedProcedure, List<SqlParameter>parameters)
         {
             DataTable result = new DataTable();
 
             try
             {
-                SqlConnection conn = new SqlConnection(ConnectionString);
+                SqlConnection conn = new SqlConnection(_connectionString);
                 SqlCommand cmd = new SqlCommand(storedProcedure, conn);
 
                 foreach (SqlParameter param in parameters)
@@ -60,7 +64,7 @@ namespace Sistema.SistemaDL.Propiedades
 
             try
             {
-                SqlConnection conn = new SqlConnection(ConnectionString);
+                SqlConnection conn = new SqlConnection(_connectionString);
                 SqlCommand cmd = new SqlCommand(storedProcedure, conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
@@ -86,7 +90,7 @@ namespace Sistema.SistemaDL.Propiedades
 
             try
             {
-                SqlConnection conn = new SqlConnection(ConnectionString);
+                SqlConnection conn = new SqlConnection(_connectionString);
 
                 using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
                 {
@@ -104,6 +108,12 @@ namespace Sistema.SistemaDL.Propiedades
 
             return result;
         }
+
+          
+
+
+        }
+
+
     }
 
-}

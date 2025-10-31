@@ -1,0 +1,248 @@
+﻿@model List<Sistema.Models.asistenciaModel>
+
+@{
+    ViewData["Title"] = "Registros de Asistencia";
+    var rol = Context.Session.GetString("Rol"); // ← Detecta el rol actual
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - PCLATEZ</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .navbar {
+            background-color: #1E5631;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar img {
+            height: 35px;
+        }
+
+        .nav-link {
+            color: #fff !important;
+        }
+
+        .container-main {
+            margin-top: 90px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-3px);
+            }
+
+        .table th {
+            font-weight: 600;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f0fff0;
+        }
+
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+            .btn:hover {
+                transform: scale(1.05);
+            }
+
+        .badge {
+            font-size: 0.9rem;
+            padding: 6px 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding: 20px 0;
+            text-align: center;
+            background: #1E5631;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🔹 Barra superior -->
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">
+                <img src="/css/Img/logo.png" alt="Logo PCLATEZ" />
+                PCLATEZ | Control de Asistencia
+            </a>
+            <div class="d-flex">
+                <a href="/Home/Index" class="nav-link me-3">
+                    <i class="fa-solid fa-house"></i> Inicio
+                </a>
+                <a href="/Account/Logout" class="btn btn-outline-light btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🔹 Filtros de búsqueda -->
+    <form method="get" asp-action="Index" class="mb-3 mt-5">
+        <div class="row g-2 align-items-center">
+            <div class="col-auto">
+                <input type="text" name="nombre" value="@ViewBag.Nombre" placeholder="Nombre" class="form-control" />
+            </div>
+            <div class="col-auto">
+                <input type="date" name="fecha" value="@ViewBag.Fecha" class="form-control" />
+            </div>
+            <div class="col-auto">
+                <input type="week" name="semana" value="@ViewBag.Semana" class="form-control" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- 🔹 Contenido principal -->
+    <div class="container container-main">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-success fw-bold">
+                <i class="fa-solid fa-calendar-check"></i> @ViewData["Title"]
+            </h2>
+
+            <form asp-action="Sincronizar" method="post">
+                <button type="submit" class="btn btn-success shadow-sm">
+                    <i class="fa-solid fa-rotate"></i> Sincronizar desde el reloj
+                </button>
+            </form>
+        </div>
+
+        @if (ViewBag.Mensaje != null)
+        {
+            <div class="alert alert-info shadow-sm">
+                <i class="fa-solid fa-circle-info"></i> @ViewBag.Mensaje
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header bg-success text-white fw-semibold py-3">
+                <i class="fa-solid fa-users-line"></i> Lista de Asistencias
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="table-success text-dark">
+                        <tr>
+                            <th>ID Reloj</th>
+                            <th>Colaborador</th>
+                            <th>Fecha</th>
+                            <th>Hora Entrada</th>
+                            <th>Hora Salida</th>
+                            <th>Estado</th>
+                            @if (rol == "diradmin")
+                            {
+                                <th>Acciones</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@(item.num_empleado_reloj ?? "—")</td>
+                                    <td>@(item.colaborador?.nombre ?? "— Sin nombre —")</td>
+                                    <td>@(item.fecha.ToString("yyyy-MM-dd"))</td>
+                                    <td>@(item.hora_entrada?.ToString("HH:mm:ss") ?? "—")</td>
+                                    <td>@(item.hora_salida?.ToString("HH:mm:ss") ?? "—")</td>
+                                    <td>
+                                        <span class="badge
+                                                    @(item.estado == "Presente" ? "bg-success" :
+                                                                                            item.estado == "Retardo" ? "bg-warning text-dark" :
+                                                                                            item.estado == "Falta" ? "bg-danger" : "bg-secondary")">
+                                    @(item.estado ?? "Sin estado")
+                                </span>
+                            </td>
+
+                            @if (rol == "diradmin")
+                                    {
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.id_asistencia" class="btn btn-warning btn-sm">
+                                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                                            </a>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="@(rol == "DireccionGeneral" ? 7 : 6)" class="text-muted py-4">
+                                    <i class="fa-solid fa-circle-exclamation"></i> No hay registros disponibles
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 🔹 Paginación -->
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center mt-3">
+                @{
+                    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+                    int paginaActual = ViewBag.PaginaActual ?? 1;
+                }
+                @for (int i = 1; i <= totalPaginas; i++)
+                {
+                    <li class="page-item @(i == paginaActual ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <!-- 🔹 Guardar registros -->
+        <form asp-action="GuardarRegistros" method="post" class="mt-4 text-end">
+            <button type="submit" class="btn btn-outline-success shadow-sm">
+                <i class="fa-solid fa-database"></i> Guardar en Base de Datos
+            </button>
+        </form>
+    </div>
+
+    <footer>
+        <small>&copy; 2025 PCLATEZ | Sistema de Control de Asistencia</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

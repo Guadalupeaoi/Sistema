@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
@@ -8,12 +9,17 @@ namespace Sistema.Models
 {
     public class UsuarioModel
     {
-        [DisplayName("Usuario")]
-        [Required(ErrorMessage = "El usuario no es correcto")]
-        public string? NombreUsuario { get; set; }
+        [Key]
+        public int Id { get; set; }
 
-        [DisplayName("Contrasela")]
-        [Required(ErrorMessage = "Escriba la contraseña")]
-        public string? Password { get; set; }
+        [Required(ErrorMessage = "El campo Usuario es obligatorio")]
+        public string? Usuario { get; set; }
+
+        [Required(ErrorMessage = "El campo Contraseña es obligatorio")]
+        [DataType(DataType.Password)]
+        public string? Contrasena { get; set; }
+
+        [Required(ErrorMessage = "El campo Rol es obligatorio")]
+        public string? Rol { get; set; } // "RecursosHumanos" o "DireccionGeneral"
     }
 }

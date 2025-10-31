@@ -25,6 +25,7 @@ namespace Sistema.SistemaBL.Propiedades
                 asistenciaEL itemAsistencia = new asistenciaEL();
 
                 itemAsistencia.Id_asistencia = Int32.TryParse(row["Id_asistencia"].ToString(), out evaluaEntero) ? evaluaEntero : 0;
+                itemAsistencia.colaborador = !string.IsNullOrEmpty(row["Colaborador"].ToString()) ? row["nombre"].ToString(): "";
                 itemAsistencia.Fecha = DateTime.TryParse(row["fecha"].ToString(), out evaluaFecha) ? evaluaFecha : new DateTime(2000, 01, 01);
                 itemAsistencia.Hora_entrada = TimeSpan.TryParse(row["Hora_entrada"].ToString(), out evaluaHora) ? evaluaHora : TimeSpan.Zero;
                 itemAsistencia.Hora_salida = TimeSpan.TryParse(row["Hora_salida"].ToString(), out evaluaHora) ? evaluaHora : TimeSpan.Zero;
@@ -59,6 +60,11 @@ namespace Sistema.SistemaBL.Propiedades
             }
 
             return asisFecha;
+        }
+
+        internal List<asistenciaEL> ConsultaAsistencia(int id_asistencia, int numEmpleado, string? nombre, string? apellido, DateTime? fecha, TimeSpan hora_entrada, TimeSpan hora_salida, DateTime? dias_Laborales, int id_observaciones, int v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

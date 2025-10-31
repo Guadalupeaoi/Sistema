@@ -8,6 +8,7 @@ namespace Sistema.Entidad
     public class asistenciaEL
     {
         public int Id_asistencia {  get; set; }
+        public string? colaborador { get; set; }
         public DateTime Fecha { get; set; }
         public TimeSpan Hora_entrada { get; set; }
         public TimeSpan Hora_salida { get; set;}

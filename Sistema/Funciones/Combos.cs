@@ -7,7 +7,7 @@ namespace Sistema.Funciones
 {
     public class Combos
     {
-        public List<SelectListItem> ComboColaborador(string Nombre, string Apellido, bool EsRequerido = false)
+        public List<SelectListItem> ComboColaborador(string Nombres, string Apellidos, bool EsRequerido = false)
         {
             List<SelectListItem> comboColaborador = new List<SelectListItem>();
 
@@ -15,13 +15,14 @@ namespace Sistema.Funciones
                 comboColaborador.Add(new SelectListItem { Value = "", Text = "Seleccione un colaborador" });
             else
                 comboColaborador.Add(new SelectListItem { Value = "0", Text = "Seleccione un colaborador" });
-            List<colaboradorEl> colaList = new colaboradorBL().ConsultaNombre(Nombre, Apellido);
+            List<colaboradorEl> colaList = new colaboradorBL().ConsultaNombre(Nombres, 0, 0, Apellidos, Apellidos);
 
             foreach (colaboradorEl itemCola in colaList)
             {
                 SelectListItem itemList = new SelectListItem();
                 itemList.Value = itemCola.Num_empleado.ToString();
                 itemList.Text = itemCola.nombre;
+                itemList.Text = itemCola.apellido;
 
                 comboColaborador.Add(itemList);
 
@@ -40,12 +41,13 @@ namespace Sistema.Funciones
             else
                 comboAsistencia.Add(new SelectListItem { Value = "0", Text = "Seleccione la asistencia" });
 
-            List<asistenciaEL> asisList = new asistenciaBL().ConsultaAsistencia(id_asistencia);
+            List<asistenciaEL> asisList = new asistenciaBL().ConsultaAsistencia("", id_asistencia);
 
             foreach (asistenciaEL itemAsistencia in asisList)
             {
                 SelectListItem itemList = new SelectListItem();
                 itemList.Value = itemAsistencia.Id_asistencia.ToString();
+                itemList.Value = itemAsistencia.colaborador;
                 itemList.Text = itemAsistencia.Estado;
                 itemList.Value = itemAsistencia.Hora_entrada.ToString();
                 itemList.Value = itemAsistencia.Hora_salida.ToString();
@@ -66,7 +68,7 @@ namespace Sistema.Funciones
             else
                 items.Add(new SelectListItem { Value = "0", Text = "Selecciona el día" });
 
-            List<asistenciaEL> asisList = new asistenciaBL().ConsultaDias(Fecha, Dias_laborales);
+            List<asistenciaEL> asisList = new asistenciaBL().ConsultaDias("",Fecha, Dias_laborales);
 
             foreach (var itemDia in asisList)
             {
@@ -133,9 +135,7 @@ namespace Sistema.Funciones
             throw new NotImplementedException();
         }
 
-        internal int ComboColaborador(bool v)
-        {
-            throw new NotImplementedException();
-        }
+      
+        
     }
 }

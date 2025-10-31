@@ -1,99 +1,139 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
-using Sistema.Models;
-using Sistema.Funciones;
-using Sistema.SistemaBL.Propiedades;
+using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
+using Sistema.AppStart;
 using Sistema.Entidad;
+using Sistema.Funciones;
+using Sistema.Models;
+using Sistema.SistemaBL.Propiedades;
+using Sistema.SistemaDL.Propiedades;
+using System.Linq;
 
 namespace Sistema.Controllers
 {
 
-    [Authorize]
+    
     public class ColaboradorController : Controller
     {
-        public IActionResult Index(string MsgToServer = "")
+
+        private readonly ApplicationDbContext _context;
+
+        public ColaboradorController(ApplicationDbContext context)
         {
-            try
-            {
-                ColaboradorModel model = new ColaboradorModel();
-
-                List<SelectListItem> comboColaborador = new List<SelectListItem>();
-                comboColaborador.Add(new SelectListItem { Value = "", Text = "Selecciona el colaborador" });
-                List<SelectListItem> comboAsistencia = new List<SelectListItem>();
-                comboAsistencia.Add(new SelectListItem { Value = "", Text = "Seleccion la asistencia" });
-
-                model.num_empleado = new Combos().ComboColaborador(false);
-                model.nombres = comboColaborador;
-                model.apeliidos = comboColaborador;
-                model.Numempleado = comboAsistencia;
-
-                if (Request.Query.ContainsKey("MsgToServer"))
-                {
-                    ViewBag.MsgServer = MsgToServer;
-                }
-
-                return View();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction("Error", "ManagementError");
-            }
+            _context = context;
         }
+
+       
+
+        public async Task<IActionResult> Index(string? q)
+        {
+            var colaboradores = from c in _context.Colaboradores
+                                select c;
+
+            if (!string.IsNullOrEmpty(q))
+            {
+                q = q.ToLower();
+                colaboradores = colaboradores.Where(c =>
+                    c.num_empleado.ToString().Contains(q)||
+                    c.nombre.ToLower().Contains(q) ||
+                    c.apellido.ToLower().Contains(q) ||
+                    c.area.ToLower().Contains(q)
+                );
+            }
+
+            return View(await colaboradores.ToListAsync());
+        }
+
+
 
         [HttpGet]
-        public JsonResult GetConsultaNombre(string word, int page, int rows, string searching, int Numempleado, string nombres, string apellidos)
+            public ActionResult Create()
+            {
+
+            return View();
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(ColaboradorModel colaborador)
         {
-            try
+            Console.WriteLine(">>> Entró al método Create POST");
+
+            if (ModelState.IsValid)
             {
-                List<ColaboradorModel> listaColab = new List<ColaboradorModel>();
-                colaboradorBL colabObj = new colaboradorBL();
-
-                if (searching is null)
-                    searching = string.Empty;
-
-                List<colaboradorEl> colabList = colabObj.ConsultaNombre(searching, Numempleado, nombres, apellidos, 0);
-
-                foreach (colaboradorEl itemColab in colabList.Skip((page - 1) * rows).Take(rows).ToList())
-
-                {
-                    ColaboradorModel itemModel = new ColaboradorModel();
-                    itemModel.num_empleado = itemColab.Num_empleado;
-                    itemModel.nombre = itemColab.nombre;
-                    itemModel.apellido = itemColab.apellido;
-                    itemModel.area = itemColab.area;
-
-                    listaColab.Add(itemModel);
-                }
-
-                int totalRecords = colabList.Count();
-                var totalPages = (int)Math.Ceiling((float)totalRecords / (float)rows);
-
-                var jsonData = new
-                {
-                    total = totalPages,
-                    page,
-                    records = totalRecords,
-                    rows = listaColab
-                };
-
-                return Json(jsonData);
+                _context.Colaboradores.Add(colaborador);
+                _context.SaveChanges();
+                Console.WriteLine(">>> Colaborador guardado correctamente");
+                return RedirectToAction("Index");
             }
 
-            catch (Exception ex)
-            {
-                return null;
-            }
+            Console.WriteLine(">>> Modelo no válido");
+            return View(colaborador);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var colaborador = await _context.Colaboradores
+                .FirstOrDefaultAsync(c => c.num_empleado == id);
+
+            if (colaborador == null)
+                return NotFound();
+
+            return View(colaborador);
+        }
+       
+        // POST: Colaborador/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var colaborador = await _context.Colaboradores.FindAsync(id);
+            if (colaborador != null)
+            {
+                _context.Colaboradores.Remove(colaborador);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
         [HttpGet]
-        public ActionResult Edit(int NumEmpleado) {
-
-            try
+        public IActionResult Edit(int id)
+        {
+            var colaborador = _context.Colaboradores.Find(id);
+            if (colaborador == null)
             {
-                colaboradorEl colaboradorEl
+                return NotFound();
             }
+            return View(colaborador);
         }
-    }
-}
+
+        // POST: Colaborador/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, ColaboradorModel colaborador)
+        {
+            if (id != colaborador.num_empleado)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(colaborador);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(colaborador);
+        }
+
+    } }
+

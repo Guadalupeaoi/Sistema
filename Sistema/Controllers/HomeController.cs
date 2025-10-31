@@ -18,8 +18,9 @@ namespace Sistema.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Login()
         {
+            RedirectToAction ("Index", "Login");
             return View();
         }
 
@@ -28,5 +29,7 @@ namespace Sistema.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+      
     }
 }

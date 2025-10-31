@@ -1,49 +1,160 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    bool esLogin = currentController == "Login" && currentAction == "Login";
+    bool esHome = currentController == "Home" && currentAction == "Index";
+}
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Sistema</title>
+
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Estilos -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Sistema.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Sistema</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Sistema - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <style>
+        /* ======= ESTILOS GENERALES ======= */
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* ======= NAVBAR ======= */
+        .navbar {
+            background: linear-gradient(90deg, #00C853, #006B3C);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-brand img {
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .nav-link {
+            color: #b9f8cf !important;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+            .nav-link:hover {
+                color: #fff !important;
+            }
+
+        .btn-nav {
+            background-color: #00C853;
+            border: none;
+            color: #b9f8cf;
+            border-radius: 20px;
+            padding: 8px 20px;
+            transition: 0.3s;
+        }
+
+            .btn-nav:hover {
+                background-color: #009624;
+                transform: scale(1.05);
+            }
+
+        /* ======= CONTENIDO ======= */
+        main {
+            padding-top: 30px;
+            padding-bottom: 50px;
+        }
+
+        /* ======= FOOTER ======= */
+        footer {
+            background-color: #00C853;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* ======= HOME (fondo completo) ======= */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1535909339361-9b60e1fe1a5a?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+            .hero h1 {
+                font-size: 3rem;
+                font-weight: 700;
+            }
+    </style>
+</head>
+
+<body>
+    @if (!esLogin)
+    {
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                        <img src="~/css/Img/Logo.png" alt="PCLATEZ Logo" />
+                        PCLatez
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item me-2">
+                                <a class="nav-link" asp-controller="Colaborador" asp-action="Index">
+                                    <i class="fa-solid fa-users me-1"></i> Colaboradores
+                                </a>
+                            </li>
+                            <li class="nav-item me-2">
+                                <a class="nav-link" asp-controller="Asistencia" asp-action="Index">
+                                    <i class="fa-solid fa-calendar-check me-1"></i> Asistencia
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-nav" asp-controller="Reportes" asp-action="Index">
+                                    <i class="fa-solid fa-file-excel me-1"></i> Reportes
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    }
+
+    <main role="main">
+@RenderBody()
+</main>
+
+
+    @if (!esLogin)
+    {
+        <footer>
+            &copy; @DateTime.Now.Year - Sistema de Asistencia de PCLATEZ
+        </footer>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

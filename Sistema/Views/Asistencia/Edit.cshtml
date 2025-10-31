@@ -1,0 +1,63 @@
+﻿@model Sistema.Models.asistenciaModel
+@{
+    ViewData["Title"] = "Editar Asistencia";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-4">
+        <div class="card-header bg-success text-white fw-semibold">
+            <i class="fa-solid fa-pen-to-square"></i> @ViewData["Title"]
+        </div>
+
+        <div class="card-body">
+            @* 🔹 Importante: enviar también el ID en la ruta *@
+            <form asp-action="Edit" asp-route-id="@Model.id_asistencia" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="id_asistencia" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="fecha" class="form-label fw-semibold">Fecha</label>
+                        <input asp-for="fecha" class="form-control" type="date" />
+                        <span asp-validation-for="fecha" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="estado" class="form-label fw-semibold">Estado</label>
+                        <select asp-for="estado" class="form-select">
+                            <option value="Presente">Presente</option>
+                            <option value="Falta">Falta</option>
+                            <option value="Retardo">Retardo</option>
+                        </select>
+                        <span asp-validation-for="estado" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="hora_entrada" class="form-label fw-semibold">Hora de Entrada</label>
+                        <input asp-for="hora_entrada" class="form-control" type="time" />
+                        <span asp-validation-for="hora_entrada" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="hora_salida" class="form-label fw-semibold">Hora de Salida</label>
+                        <input asp-for="hora_salida" class="form-control" type="time" />
+                        <span asp-validation-for="hora_salida" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="fa-solid fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

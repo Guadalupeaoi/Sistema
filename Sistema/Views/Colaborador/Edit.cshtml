@@ -1,0 +1,109 @@
+﻿@model Sistema.Models.ColaboradorModel
+@{
+    ViewData["Title"] = "Editar Colaborador";
+}
+
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="#">
+            <img src="/css/Img/logo.png" alt="Logo PCLATEZ" />
+            PCLATEZ | Control de Asistencia
+        </a>
+        <div class="d-flex">
+            <a href="/Home/Index" class="nav-link me-3">
+                <i class="fa-solid fa-house"></i> Inicio
+            </a>
+            <a href="/Account/Logout" class="btn btn-outline-light btn-sm">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <!-- Tarjeta principal -->
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-success text-white text-center py-3 rounded-top-4">
+                    <h3 class="mb-0"><i class="fa-solid fa-user-pen"></i> Editar información del colaborador</h3>
+                </div>
+
+                <div class="card-body bg-light p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Campo oculto -->
+                        <input type="hidden" asp-for="num_empleado" />
+
+                        <div class="mb-3">
+                            <label asp-for="num_empleado" class="form-label fw-semibold">
+                                <i class="fa-solid fa-id-card"></i> Número de empleado
+                            </label>
+                            <input asp-for="num_empleado" class="form-control shadow-sm" readonly />
+                            <span asp-validation-for="num_empleado" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="nombre" class="form-label fw-semibold">
+                                <i class="fa-solid fa-user"></i> Nombre
+                            </label>
+                            <input asp-for="nombre" class="form-control shadow-sm" placeholder="Editar nombre..." />
+                            <span asp-validation-for="nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="apellido" class="form-label fw-semibold">
+                                <i class="fa-solid fa-user-tag"></i> Apellido
+                            </label>
+                            <input asp-for="apellido" class="form-control shadow-sm" placeholder="Editar apellido..." />
+                            <span asp-validation-for="apellido" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="area" class="form-label fw-semibold">
+                                <i class="fa-solid fa-building"></i> Área
+                            </label>
+                            <input asp-for="area" class="form-control shadow-sm" placeholder="Editar área de trabajo..." />
+                            <span asp-validation-for="area" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                                <i class="fa-solid fa-xmark"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 shadow-sm">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Íconos de Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    body {
+        background: linear-gradient(to right, #f3fff3, #e9f7ef);
+    }
+
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+    .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 6px rgba(25, 135, 84, 0.4);
+    }
+</style>

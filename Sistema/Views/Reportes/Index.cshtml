@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Reporte Semanal";
+}
+
+<h2>Reporte Semanal</h2>
+
+<form asp-action="GenerarReporte" method="post" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <label>Fecha Inicio</label>
+            <input type="date" name="fechaInicio" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+            <label>Fecha Fin</label>
+            <input type="date" name="fechaFin" class="form-control" required />
+        </div>
+        <div class="col-md-4 align-self-end">
+            <button type="submit" class="btn btn-primary">Generar Reporte</button>
+        </div>
+    </div>
+</form>

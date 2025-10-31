@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Sistema.Entidad;
 using Sistema.SistemaDL;
 using Sistema.SistemaDL.Propiedades;
@@ -8,7 +9,7 @@ namespace Sistema.SistemaBL.Propiedades
 {
     public class colaboradorBL
     {
-        public List<colaboradorEl> ConsultaNombre(string Nombre, int numempleado, string Apellido, string apellidos)
+        public List<colaboradorEl> ConsultaNombre(string Nombre, int numempleado, int v, string Apellido, string apellidos)
         {
             List<colaboradorEl> colaList = new List<colaboradorEl>();
             List<SqlParameter> parametros = new List<SqlParameter>();
@@ -66,6 +67,16 @@ namespace Sistema.SistemaBL.Propiedades
         }
 
         internal List<colaboradorEl> ConsultaNombre(string searching, int numempleado, string nombres, string apellidos, int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object ConsultaNombre(string empty, int v1, int v2, int v3, int numEmpleado)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal colaboradorEl ConsultaNombre(string empty, int v1, int v2, int v3, List<SelectListItem>? nombres)
         {
             throw new NotImplementedException();
         }
